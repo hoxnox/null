@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 2.6.4)
 # options
 
 option(WITH_TESTS "Build tests."  OFF)
-option(WITH_DOC   "Generate docs" OFF)
+option(WITH_DOCS  "Generate docs" OFF)
 
 ########################################################################
 # general
@@ -33,7 +33,7 @@ include_directories("${PROJECT_SOURCE_DIR}/src")
 ########################################################################
 # docs
 
-if(WITH_DOC)
+if(WITH_DOCS)
 	FIND_PACKAGE(Doxygen)
 	if(DOXYGEN_FOUND)
 		set(ENV{$NULL$_ROOT} "${PROJECT_SOURCE_DIR}")
@@ -68,7 +68,7 @@ function(nx_GTEST_ADD_TESTS executable extra_args)
 	endforeach()
 endfunction()
 
-if(BUILD_TESTS)
+if(WITH_TESTS)
 	set(SOURCES_TEST
 		./test/test.cpp)
 	enable_testing()
