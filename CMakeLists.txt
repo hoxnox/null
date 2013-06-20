@@ -21,7 +21,7 @@ set($NULL$_VERSION_PATCH 0)
 # configuration header
 configure_file(
 	"${PROJECT_SOURCE_DIR}/src/$NULL$_config.cfg"
-	"${PROJECT_SOURCE_DIR}/src/$NULL$_config.hpp"
+	"${PROJECT_SOURCE_DIR}/src/$NULL$_config.h"
 	ESCAPE_QUOTES
 )
 
