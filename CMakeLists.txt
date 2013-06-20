@@ -1,55 +1,72 @@
 # @author $username$ <$usermail$>
 # @date $date$
-# NULL CMake build script
+# $NULL$ cmake build script
 
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 2.6.4)
 
-###############################################################################
+########################################################################
 # options
 
-option(BUILD_TESTS  "Build tests." OFF)
-option(BUILD_GTEST  "Build gtest with the project. Usefull for windows systems, to prevent DLL-HELL" OFF)
-option(GENERATE_DOC "Don't generate docs" ON)
+option(WITH_TESTS "Build tests."  OFF)
+option(WITH_DOC   "Generate docs" OFF)
 
-###############################################################################
+########################################################################
 # general
 
-project(NULL)
+project($NULL$)
 
-include("${PROJECT_SOURCE_DIR}/cmake/ext/nx_utils.cmake")
-nx_configure()
-
-set(NULL_VERSION_MAJOR 0)
-set(NULL_VERSION_MINOR 0)
+set($NULL$_VERSION_MAJOR 0)
+set($NULL$_VERSION_MINOR 0)
+set($NULL$_VERSION_PATCH 0)
 # configuration header
 configure_file(
-	"${PROJECT_SOURCE_DIR}/src/nullconfig.cfg"
-	"${PROJECT_SOURCE_DIR}/src/nullconfig.hpp"
+	"${PROJECT_SOURCE_DIR}/src/$NULL$config.cfg"
+	"${PROJECT_SOURCE_DIR}/src/$NULL$config.hpp"
 	ESCAPE_QUOTES
 )
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/Modules")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}"
+                      "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
-###########################################################################
+########################################################################
 # docs
 
-if(GENERATE_DOC)
+if(WITH_DOC)
 	FIND_PACKAGE(Doxygen)
 	if(DOXYGEN_FOUND)
-		set(ENV{NULL_ROOT} ${PROJECT_SOURCE_DIR})
-		ADD_CUSTOM_TARGET(doc COMMAND ${CMAKE_COMMAND} 
+		set(ENV{$NULL$_ROOT} "${PROJECT_SOURCE_DIR}")
+		ADD_CUSTOM_TARGET(doc COMMAND ${CMAKE_COMMAND}
 			-D PDIR="${PROJECT_SOURCE_DIR}"
 			-P "${PROJECT_SOURCE_DIR}/doc/doxygen.cmake")
 	else()
-		message(WARNING "Doxygen not found. Documentation wouldn't be ganarated")
+		message(WARNING
+			"Doxygen not found."
+			" Documentation wouldn't be ganarated")
 	endif()
 endif()
 
-
-###########################################################################
+########################################################################
 # tests
+
+function(nx_GTEST_ADD_TESTS executable extra_args)
+	foreach(source ${ARGN})
+		file(READ "${source}" contents)
+		string(REGEX MATCHALL "TEST_?F?\\(([A-Za-z_0-9 ,]+)\\)"
+			found_tests ${contents})
+		foreach(hit ${found_tests})
+			string(REGEX REPLACE ".*\\( *([A-Za-z_0-9]+),"
+			                     " *([A-Za-z_0-9]+) *\\).*"
+			                     "\\1.\\2"
+			                     test_name ${hit})
+			add_test("${executable}-${test_name}"
+				${executable}
+				--gtest_filter=${test_name}
+				${extra_args})
+		endforeach()
+	endforeach()
+endfunction()
 
 if(BUILD_TESTS)
 	set(SOURCES_TEST
@@ -60,13 +77,14 @@ if(BUILD_TESTS)
 	set(TEST test_${PROJECT_NAME})
 	add_executable(${TEST} ${SOURCES_TEST})
 	if(NOT WIN32)
-		SET_TARGET_PROPERTIES(${TEST} PROPERTIES LINK_FLAGS -pthread)
+		SET_TARGET_PROPERTIES(${TEST} 
+			PROPERTIES LINK_FLAGS -pthread)
 	endif(NOT WIN32)
 	target_link_libraries("${TEST}" ${GTEST_LIBRARIES} ${LIBRARIES})
 	nx_GTEST_ADD_TESTS("${TEST}" ${SOURCES_TEST})
 endif()
 
-###########################################################################
+########################################################################
 # installation
 
 set(CPACK_SET_DESTDIR ON)
@@ -76,14 +94,17 @@ install(TARGETS ${TARGETS} DESTINATION bin)
 
 INCLUDE(InstallRequiredSystemLibraries)
 
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "NULL DESC")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "$NULL$ DESC")
 SET(CPACK_PACKAGE_VENDOR "ORG")
-#SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
-#SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
-SET(CPACK_PACKAGE_VERSION_MAJOR ${NULL_VERSION_MAJOR})
-SET(CPACK_PACKAGE_VERSION_MINOR ${NULL_VERSION_MINOR})
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE
+	"${CMAKE_CURRENT_SOURCE_DIR}/README.markdown")
+SET(CPACK_RESOURCE_FILE_LICENSE
+	"${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+SET(CPACK_PACKAGE_VERSION_MAJOR ${$NULL$_VERSION_MAJOR})
+SET(CPACK_PACKAGE_VERSION_MINOR ${$NULL$_VERSION_MINOR})
+SET(CPACK_PACKAGE_VERSION_PATCH ${$NULL$_VERSION_PATCH})
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY
+	"CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
 IF(WIN32 AND NOT UNIX)
 	# NOT IMPLEMENTED
 ELSE(WIN32 AND NOT UNIX)
