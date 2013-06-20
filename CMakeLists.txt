@@ -20,8 +20,8 @@ set($NULL$_VERSION_MINOR 0)
 set($NULL$_VERSION_PATCH 0)
 # configuration header
 configure_file(
-	"${PROJECT_SOURCE_DIR}/src/$NULL$config.cfg"
-	"${PROJECT_SOURCE_DIR}/src/$NULL$config.hpp"
+	"${PROJECT_SOURCE_DIR}/src/$NULL$_config.cfg"
+	"${PROJECT_SOURCE_DIR}/src/$NULL$_config.hpp"
 	ESCAPE_QUOTES
 )
 

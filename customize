@@ -1,5 +1,5 @@
 #!/bin/sh
 
 perl -pi -e "s/\\\$NULL\\\$/$1/g" `find . -not -path '*git*' -and -type f`
-mv config.tmpl ./src/$1config.cfg
+mv ./src/config.tmpl ./src/$1_config.cfg
 rm $0
