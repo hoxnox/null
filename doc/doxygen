@@ -97,7 +97,6 @@ HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 HTML_HEADER            =
 HTML_FOOTER            =
-#HTML_STYLESHEET        = $($NULL$_ROOT)/doc/doxyhoxnox.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = YES
 GENERATE_DOCSET        = NO
@@ -214,10 +213,3 @@ DOT_CLEANUP            = YES
 # Configuration::additions related to the search engine
 #---------------------------------------------------------------------------
 SEARCHENGINE           = NO
-#---------------------------------------------------------------------------
-# Aliases
-#---------------------------------------------------------------------------
-ALIASES += licence="\par License:\n"
-ALIASES += copyright="\par Copyrights:\n"
-ALIASES += cmd="<div class=\"cmd\">@verbatim"
-ALIASES += endcmd="@endverbatim</div>"
