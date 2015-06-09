@@ -56,8 +56,7 @@ function(nx_GTEST_ADD_TESTS executable extra_args)
 		string(REGEX MATCHALL "TEST_?F?\\(([A-Za-z_0-9 ,]+)\\)"
 			found_tests ${contents})
 		foreach(hit ${found_tests})
-			string(REGEX REPLACE ".*\\( *([A-Za-z_0-9]+),"
-			                     " *([A-Za-z_0-9]+) *\\).*"
+			string(REGEX REPLACE ".*\\( *([A-Za-z_0-9]+), *([A-Za-z_0-9]+) *\\).*"
 			                     "\\1.\\2"
 			                     test_name ${hit})
 			add_test("${executable}-${test_name}"
