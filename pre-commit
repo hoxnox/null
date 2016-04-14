@@ -1,0 +1,15 @@
+#!/bin/sh
+
+#replace $username$, $usermail$ and $date$ placeholders
+DATE=`date +"%Y%m%d %H:%M:%S"`
+USER=`git config --get user.name`
+MAIL=`git config --get user.email`
+FILES=`git diff-index --cached --name-only HEAD`
+for FILE in $FILES ; do
+	sed -i "s/\\\$username\\\$/$USER/g;s/\\\$usermail\\\$/$MAIL/g;s/\\\$date\\\$/$DATE/g" $FILE
+done
+for FILE in $FILES ; do
+	git add $FILE
+done
+exit
+

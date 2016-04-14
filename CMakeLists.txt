@@ -31,56 +31,15 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}"
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
 ########################################################################
-# docs
+# tests and docs
 
 if(WITH_DOCS)
-	FIND_PACKAGE(Doxygen)
-	if(DOXYGEN_FOUND)
-		set(ENV{$NULL$_ROOT} "${PROJECT_SOURCE_DIR}")
-		ADD_CUSTOM_TARGET(doc COMMAND ${CMAKE_COMMAND}
-			-D PDIR="${PROJECT_SOURCE_DIR}"
-			-P "${PROJECT_SOURCE_DIR}/doc/doxygen.cmake")
-	else()
-		message(WARNING
-			"Doxygen not found."
-			" Documentation wouldn't be ganarated")
-	endif()
+	add_subdirectory(doc)
 endif()
 
-########################################################################
-# tests
-
-function(nx_GTEST_ADD_TESTS executable extra_args)
-	foreach(source ${ARGN})
-		file(READ "${source}" contents)
-		string(REGEX MATCHALL "TEST_?F?\\(([A-Za-z_0-9 ,]+)\\)"
-			found_tests ${contents})
-		foreach(hit ${found_tests})
-			string(REGEX REPLACE ".*\\( *([A-Za-z_0-9]+), *([A-Za-z_0-9]+) *\\).*"
-			                     "\\1.\\2"
-			                     test_name ${hit})
-			add_test("${executable}-${test_name}"
-				${executable}
-				--gtest_filter=${test_name}
-				${extra_args})
-		endforeach()
-	endforeach()
-endfunction()
-
 if(WITH_TESTS)
-	set(SOURCES_TEST
-		./test/test.cpp)
 	enable_testing()
-	find_package(GTest REQUIRED)
-	include_directories(${GTEST_INCLUDE_DIRS})
-	set(TEST test_${PROJECT_NAME})
-	add_executable(${TEST} ${SOURCES_TEST})
-	if(NOT WIN32)
-		SET_TARGET_PROPERTIES(${TEST} 
-			PROPERTIES LINK_FLAGS -pthread)
-	endif(NOT WIN32)
-	target_link_libraries("${TEST}" ${GTEST_LIBRARIES} ${LIBRARIES})
-	nx_GTEST_ADD_TESTS("${TEST}" ${SOURCES_TEST})
+	add_subdirectory(test)
 endif()
 
 ########################################################################
@@ -88,29 +47,29 @@ endif()
 
 set(CPACK_SET_DESTDIR ON)
 
-install(TARGETS ${TARGETS} DESTINATION bin)
-#install(FILES <files> DESTINATION <dest>)
-
-INCLUDE(InstallRequiredSystemLibraries)
-
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "$NULL$ DESC")
-SET(CPACK_PACKAGE_VENDOR "ORG")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE
-	"${CMAKE_CURRENT_SOURCE_DIR}/README.markdown")
-SET(CPACK_RESOURCE_FILE_LICENSE
-	"${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+#INSTALL(TARGETS
+#	targetname
+#	DESTINATION bin)
+#INSTALL(FILES filepath DESTINATION bin
+#	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+#	            GROUP_EXECUTE GROUP_READ
+#	            WORLD_READ WORLD_EXECUTE)
+#INSTALL(DIRECTORY domedir DESTINATION share/${PROJECT_NAME})
+SET(CPACK_PACKAGE_NAME $NULL$)
+#if (WITH_SYSTEM_SOMELIB)
+#	SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libsomelib (>=1.1.1)")
+#	SET(CPACK_RPM_PACKAGE_REQUIRES "libsomelib >= 1.1.1")
+#endif()
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "")
+SET(CPACK_PACKAGE_VENDOR "$uername$ <$usermail$>")
+SET(CPACK_PACKAGE_CONTACT ${CPACK_PACKAGE_VENDOR})
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.markdown")
+SET(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
 SET(CPACK_PACKAGE_VERSION_MAJOR ${$NULL$_VERSION_MAJOR})
 SET(CPACK_PACKAGE_VERSION_MINOR ${$NULL$_VERSION_MINOR})
 SET(CPACK_PACKAGE_VERSION_PATCH ${$NULL$_VERSION_PATCH})
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY
-	"CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
-IF(WIN32 AND NOT UNIX)
-	# NOT IMPLEMENTED
-ELSE(WIN32 AND NOT UNIX)
-	SET(CPACK_STRIP_FILES ${TARGETS})
-	SET(CPACK_SOURCE_STRIP_FILES "")
-ENDIF(WIN32 AND NOT UNIX)
-#SET(CPACK_PACKAGE_EXECUTABLES "null" "null desc")
-
+SET(CPACK_DEBIAN_PACKAGE_SECTION "misc")
+SET(CPACK_RPM_PACKAGE_GROUP "Applications/System")
+SET(CPACK_RPM_PACKAGE_LICENSE "MIT")
+SET(CPACK_STRIP_FILES TRUE)
 INCLUDE(CPack)
-
