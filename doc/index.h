@@ -13,9 +13,9 @@
 
 @tableofcontents
 
-@section intro Введение
+@section intro Intro
 
-@subsection desc Детальное описание
+@subsection desc Detail
 
 @li @subpage pagename
 
